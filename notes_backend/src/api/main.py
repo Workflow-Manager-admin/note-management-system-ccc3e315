@@ -38,6 +38,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- Ensure DB Initialization on Startup ---
+from src.api.notes_database import init_db
+
+@app.on_event("startup")
+def startup_event():
+    """
+    FastAPI event triggered on application startup.
+    Ensures that all DB tables are created before serving the API.
+    """
+    init_db()
+
 # --- JWT settings ---
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-secret-do-not-use-in-prod")  # replace in prod
 ALGORITHM = "HS256"
